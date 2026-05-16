@@ -1,0 +1,12 @@
+{
+    "required": true,
+    "package": "com.example.playerscale.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+        "PlayerEntityRendererMixin",
+        "PlayerEntityRendererUpdateMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}
