@@ -6,7 +6,7 @@
     "description": "Visually scale player models client-side",
     "authors": ["Simon"],
     "contact": {},
-    "license": "MIT",
+    "license": "AGPL-3.0-only",
     "icon": "assets/playerscale/icon.png",
     "environment": "client",
     "entrypoints": {
