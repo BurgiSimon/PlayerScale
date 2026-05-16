@@ -1,5 +1,6 @@
 package com.example.playerscale;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -10,6 +11,7 @@ public final class ScaleManager {
 
     private static float selfScale = 1.0f;
     private static float othersScale = 1.0f;
+    private static boolean showCrosshairInThirdPerson = false;
     private static int localPlayerEntityId = -1;
 
     public static void setSelfScale(float scale) {
@@ -26,6 +28,14 @@ public final class ScaleManager {
 
     public static float getOthersScale() {
         return othersScale;
+    }
+
+    public static boolean isShowCrosshairInThirdPerson() {
+        return showCrosshairInThirdPerson;
+    }
+
+    public static void setShowCrosshairInThirdPerson(boolean value) {
+        showCrosshairInThirdPerson = value;
     }
 
     public static void setLocalPlayerEntityId(int id) {
@@ -53,10 +63,20 @@ public final class ScaleManager {
         ID_TO_UUID.clear();
         selfScale = 1.0f;
         othersScale = 1.0f;
+        showCrosshairInThirdPerson = false;
     }
 
     public static void mapEntityId(int entityId, UUID uuid) {
         ID_TO_UUID.put(entityId, uuid);
+    }
+
+    public static Map<UUID, Float> getPlayerScales() {
+        return Collections.unmodifiableMap(SCALES);
+    }
+
+    public static void loadPlayerScales(Map<UUID, Float> scales) {
+        SCALES.clear();
+        SCALES.putAll(scales);
     }
 
     public static float getScaleByEntityId(int entityId) {

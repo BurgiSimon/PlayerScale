@@ -29,5 +29,7 @@ public class PlayerScaleMod implements ClientModInitializer {
         });
 
         ClientCommandRegistrationCallback.EVENT.register(PlayerScaleCommand::register);
+
+        ScaleConfig.load();
     }
 }

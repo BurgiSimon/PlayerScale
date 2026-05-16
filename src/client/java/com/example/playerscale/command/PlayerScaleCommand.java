@@ -1,5 +1,6 @@
 package com.example.playerscale.command;
 
+import com.example.playerscale.ScaleConfig;
 import com.example.playerscale.ScaleManager;
 import com.example.playerscale.screen.PlayerScaleScreen;
 import com.mojang.brigadier.CommandDispatcher;
@@ -46,6 +47,7 @@ public final class PlayerScaleCommand {
                 .then(ClientCommandManager.literal("resetall")
                     .executes(ctx -> {
                         ScaleManager.resetAll();
+                        ScaleConfig.save();
                         ctx.getSource().sendFeedback(Text.literal("Reset all player scales."));
                         return 1;
                     })
@@ -65,6 +67,7 @@ public final class PlayerScaleCommand {
             return 0;
         }
         ScaleManager.setScale(entry.getProfile().id(), scale);
+        ScaleConfig.save();
         source.sendFeedback(Text.literal("Set " + playerName + " scale to " + scale));
         return 1;
     }
@@ -81,6 +84,7 @@ public final class PlayerScaleCommand {
             return 0;
         }
         ScaleManager.resetScale(entry.getProfile().id());
+        ScaleConfig.save();
         source.sendFeedback(Text.literal("Reset " + playerName + " scale."));
         return 1;
     }
