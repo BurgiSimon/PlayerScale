@@ -1,6 +1,7 @@
 package com.example.playerscale.screen;
 
 import com.example.playerscale.PlayerScaleMod;
+import com.example.playerscale.ScaleConfig;
 import com.example.playerscale.ScaleManager;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,6 +17,8 @@ public class PlayerScaleScreen extends Screen {
 
     private static final double MIN_SCALE = 0.1;
     private static final double MAX_SCALE = 10.0;
+    private static final float[] PRESETS = {0.5f, 1.0f, 2.0f, 5.0f};
+    private static final String[] PRESET_LABELS = {"Tiny", "Normal", "Large", "Giant"};
 
     private final Screen parent;
     private ScaleSlider selfSlider;
@@ -31,31 +34,60 @@ public class PlayerScaleScreen extends Screen {
     @Override
     protected void init() {
         int centerX = this.width / 2;
-        int y = this.height / 2 - 65;
+        int y = this.height / 2 - 85;
 
         selfSlider = new ScaleSlider(centerX - 100, y, 200, 20,
                 "My Size", ScaleManager.getSelfScale(), ScaleManager::setSelfScale);
         addDrawableChild(selfSlider);
 
-        othersSlider = new ScaleSlider(centerX - 100, y + 30, 200, 20,
+        addPresetButtons(centerX - 100, y + 22, selfSlider);
+
+        othersSlider = new ScaleSlider(centerX - 100, y + 52, 200, 20,
                 "Others Size", ScaleManager.getOthersScale(), ScaleManager::setOthersScale);
         addDrawableChild(othersSlider);
+
+        addPresetButtons(centerX - 100, y + 74, othersSlider);
 
         keybindButton = ButtonWidget.builder(getKeybindText(), button -> {
             listeningForKey = true;
             button.setMessage(Text.literal("Open Key: ").append(Text.literal("> ... <").formatted(Formatting.YELLOW)));
-        }).dimensions(centerX - 100, y + 65, 200, 20).build();
+        }).dimensions(centerX - 100, y + 104, 200, 20).build();
         addDrawableChild(keybindButton);
+
+        addDrawableChild(ButtonWidget.builder(getCrosshairToggleText(), button -> {
+            ScaleManager.setShowCrosshairInThirdPerson(!ScaleManager.isShowCrosshairInThirdPerson());
+            button.setMessage(getCrosshairToggleText());
+        }).dimensions(centerX - 100, y + 134, 200, 20).build());
 
         addDrawableChild(ButtonWidget.builder(Text.literal("Reset All"), button -> {
             ScaleManager.resetAll();
             selfSlider.setScaleValue(1.0f);
             othersSlider.setScaleValue(1.0f);
-        }).dimensions(centerX - 100, y + 100, 95, 20).build());
+            ScaleConfig.save();
+            clearAndInit();
+        }).dimensions(centerX - 100, y + 169, 95, 20).build());
 
         addDrawableChild(ButtonWidget.builder(Text.literal("Done"), button -> {
-            if (client != null) client.setScreen(parent);
-        }).dimensions(centerX + 5, y + 100, 95, 20).build());
+            close();
+        }).dimensions(centerX + 5, y + 169, 95, 20).build());
+    }
+
+    private void addPresetButtons(int x, int y, ScaleSlider targetSlider) {
+        int buttonWidth = 47;
+        int gap = 2;
+        for (int i = 0; i < PRESETS.length; i++) {
+            float preset = PRESETS[i];
+            addDrawableChild(ButtonWidget.builder(Text.literal(PRESET_LABELS[i]), button -> {
+                targetSlider.setScaleValue(preset);
+            }).dimensions(x + i * (buttonWidth + gap), y, buttonWidth, 20).build());
+        }
+    }
+
+    private Text getCrosshairToggleText() {
+        boolean on = ScaleManager.isShowCrosshairInThirdPerson();
+        return Text.literal("3rd Person Crosshair: ").append(
+                on ? Text.literal("ON").formatted(Formatting.GREEN)
+                   : Text.literal("OFF").formatted(Formatting.GRAY));
     }
 
     private Text getKeybindText() {
@@ -64,6 +96,12 @@ public class PlayerScaleScreen extends Screen {
             return Text.literal("Open Key: ").append(Text.literal("[NOT SET]").formatted(Formatting.GRAY));
         }
         return Text.literal("Open Key: ").append(key.getBoundKeyLocalizedText().copy().formatted(Formatting.AQUA));
+    }
+
+    @Override
+    public void close() {
+        ScaleConfig.save();
+        if (client != null) client.setScreen(parent);
     }
 
     @Override
@@ -94,7 +132,7 @@ public class PlayerScaleScreen extends Screen {
         return super.mouseClicked(click, occupied);
     }
 
-    private static class ScaleSlider extends SliderWidget {
+    static class ScaleSlider extends SliderWidget {
         private final String label;
         private final java.util.function.Consumer<Float> onChange;
 
@@ -126,11 +164,11 @@ public class PlayerScaleScreen extends Screen {
             onChange.accept(getScaleValue());
         }
 
-        private static double scaleToSlider(float scale) {
+        static double scaleToSlider(float scale) {
             return (scale - MIN_SCALE) / (MAX_SCALE - MIN_SCALE);
         }
 
-        private static float sliderToScale(double slider) {
+        static float sliderToScale(double slider) {
             return (float) (MIN_SCALE + slider * (MAX_SCALE - MIN_SCALE));
         }
     }
