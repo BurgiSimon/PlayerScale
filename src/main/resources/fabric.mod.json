@@ -5,7 +5,12 @@
     "name": "PlayerScale",
     "description": "Visually scale player models client-side",
     "authors": ["Simon"],
-    "contact": {},
+    "contact": {
+        "homepage": "https://modrinth.com/mod/playerscale",
+        "sources": "https://github.com/BurgiSimon/PlayerScale",
+        "issues": "https://github.com/BurgiSimon/PlayerScale/issues",
+        "ko-fi": "https://ko-fi.com/chliburgi"
+    },
     "license": "AGPL-3.0-only",
     "icon": "assets/playerscale/icon.png",
     "environment": "client",

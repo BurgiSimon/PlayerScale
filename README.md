@@ -1,14 +1,16 @@
 # PlayerScale
 
-A client-side Fabric mod for Minecraft 1.21.11 that lets you visually resize player models. The scaling is purely cosmetic and only visible to you — other players are not affected.
+A client-side Fabric mod for Minecraft 1.21.11 that lets you visually resize player models. The scaling is purely cosmetic and only visible to you - other players are not affected.
 
 ## Features
 
-- Scale your own player model and other players' models (0.1x – 10x)
-- Config GUI with sliders for your size and others' size
+- Scale your own player model and other players' models (0.1x - 10x)
+- Config GUI with sliders and quick presets (Tiny, Normal, Large, Giant)
+- Toggle crosshair visibility in 3rd person view
 - Configurable keybind to open the config screen (unbound by default)
-- [Mod Menu](https://modrinth.com/mod/modmenu) integration — access settings from the mod list
-- Client-side only — no server installation needed
+- Settings persist across restarts (saved to config file)
+- [Mod Menu](https://modrinth.com/mod/modmenu) integration - access settings from the mod list
+- Client-side only - no server installation needed
 - Works in singleplayer and multiplayer
 
 ## Requirements
@@ -25,8 +27,8 @@ A client-side Fabric mod for Minecraft 1.21.11 that lets you visually resize pla
 Open the settings screen using any of these methods:
 
 - `/playerscale` command
-- Keybind (set one in Options → Controls → PlayerScale, or in the mod's config screen)
-- Mod Menu → PlayerScale → Config button
+- Keybind (set one in Options -> Controls -> PlayerScale, or in the mod's config screen)
+- Mod Menu -> PlayerScale -> Config button
 
 ### Commands
 
@@ -44,3 +46,7 @@ Open the settings screen using any of these methods:
 ```
 
 The mod jar will be in `build/libs/`.
+
+## Support
+
+If you enjoy this mod, consider supporting me on [Ko-fi](https://ko-fi.com/chliburgi)!
