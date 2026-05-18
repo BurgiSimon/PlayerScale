@@ -17,18 +17,21 @@ public class PlayerScaleMod implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
+        KeyBinding.Category category = KeyBinding.Category.create(
+                net.minecraft.util.Identifier.of("playerscale", "keybinds"));
+
         openConfigKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.playerscale.open_config",
                 InputUtil.Type.KEYSYM,
                 InputUtil.UNKNOWN_KEY.getCode(),
-                KeyBinding.Category.create(net.minecraft.util.Identifier.of("playerscale", "keybinds"))
+                category
         ));
 
         toggleScaleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
                 "key.playerscale.toggle_scale",
                 InputUtil.Type.KEYSYM,
                 InputUtil.UNKNOWN_KEY.getCode(),
-                KeyBinding.Category.create(net.minecraft.util.Identifier.of("playerscale", "keybinds"))
+                category
         ));
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
