@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -24,15 +25,16 @@ public final class ScaleConfig {
             String json = Files.readString(CONFIG_PATH);
             ConfigData data = GSON.fromJson(json, ConfigData.class);
             if (data == null) return;
-            ScaleManager.setSelfScale(data.selfScale);
-            ScaleManager.setOthersScale(data.othersScale);
+            ScaleManager.setSelfScale(clampScale(data.selfScale));
+            ScaleManager.setOthersScale(clampScale(data.othersScale));
             ScaleManager.setShowCrosshairInThirdPerson(data.showCrosshairInThirdPerson);
             if (data.playerScales != null) {
                 Map<UUID, Float> scales = new HashMap<>();
                 data.playerScales.forEach((key, value) -> {
                     try {
-                        scales.put(UUID.fromString(key), value);
-                    } catch (IllegalArgumentException ignored) {
+                        scales.put(UUID.fromString(key), clampScale(value));
+                    } catch (IllegalArgumentException e) {
+                        LOGGER.warn("Ignoring invalid UUID in config: {}", key);
                     }
                 });
                 ScaleManager.loadPlayerScales(scales);
@@ -51,10 +53,17 @@ public final class ScaleConfig {
         ScaleManager.getPlayerScales().forEach((uuid, scale) ->
                 data.playerScales.put(uuid.toString(), scale));
         try {
-            Files.writeString(CONFIG_PATH, GSON.toJson(data));
+            Path tmp = CONFIG_PATH.resolveSibling(CONFIG_PATH.getFileName() + ".tmp");
+            Files.writeString(tmp, GSON.toJson(data));
+            Files.move(tmp, CONFIG_PATH, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
         } catch (IOException e) {
             LOGGER.warn("Failed to save config", e);
         }
+    }
+
+    private static float clampScale(float value) {
+        if (Float.isNaN(value) || Float.isInfinite(value)) return 1.0f;
+        return Math.max(0.1f, Math.min(10.0f, value));
     }
 
     private static class ConfigData {
