@@ -9,10 +9,10 @@ public final class ScaleManager {
     private static final Map<UUID, Float> SCALES = new ConcurrentHashMap<>();
     private static final Map<Integer, UUID> ID_TO_UUID = new ConcurrentHashMap<>();
 
-    private static float selfScale = 1.0f;
-    private static float othersScale = 1.0f;
-    private static boolean showCrosshairInThirdPerson = false;
-    private static int localPlayerEntityId = -1;
+    private static volatile float selfScale = 1.0f;
+    private static volatile float othersScale = 1.0f;
+    private static volatile boolean showCrosshairInThirdPerson = false;
+    private static volatile int localPlayerEntityId = -1;
 
     public static void setSelfScale(float scale) {
         selfScale = scale;
@@ -58,12 +58,16 @@ public final class ScaleManager {
         SCALES.remove(uuid);
     }
 
-    public static void resetAll() {
-        SCALES.clear();
-        ID_TO_UUID.clear();
+    public static synchronized void resetAll() {
         selfScale = 1.0f;
         othersScale = 1.0f;
         showCrosshairInThirdPerson = false;
+        SCALES.clear();
+        ID_TO_UUID.clear();
+    }
+
+    public static void clearEntityMappings() {
+        ID_TO_UUID.clear();
     }
 
     public static void mapEntityId(int entityId, UUID uuid) {
