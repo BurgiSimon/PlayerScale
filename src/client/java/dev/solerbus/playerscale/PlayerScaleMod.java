@@ -5,6 +5,7 @@ import dev.solerbus.playerscale.screen.PlayerScaleScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -29,6 +30,8 @@ public class PlayerScaleMod implements ClientModInitializer {
         });
 
         ClientCommandRegistrationCallback.EVENT.register(PlayerScaleCommand::register);
+
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> ScaleManager.clearEntityMappings());
 
         ScaleConfig.load();
     }
