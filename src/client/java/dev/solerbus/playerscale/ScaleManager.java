@@ -8,9 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ScaleManager {
     private static final Map<UUID, Float> SCALES = new ConcurrentHashMap<>();
     private static final Map<Integer, UUID> ID_TO_UUID = new ConcurrentHashMap<>();
+    private static final Map<Integer, Float> DISPLAY_SCALES = new ConcurrentHashMap<>();
 
     private static volatile float selfScale = 1.0f;
     private static volatile float othersScale = 1.0f;
+    private static volatile float lastSelfScale = 1.0f;
     private static volatile boolean showCrosshairInThirdPerson = false;
     private static volatile int localPlayerEntityId = -1;
 
@@ -28,6 +30,24 @@ public final class ScaleManager {
 
     public static float getOthersScale() {
         return othersScale;
+    }
+
+    public static void setLastSelfScale(float scale) {
+        lastSelfScale = scale;
+    }
+
+    public static float getLastSelfScale() {
+        return lastSelfScale;
+    }
+
+    public static void toggleSelfScale() {
+        if (selfScale == 1.0f) {
+            float target = lastSelfScale != 1.0f ? lastSelfScale : 0.5f;
+            selfScale = target;
+        } else {
+            lastSelfScale = selfScale;
+            selfScale = 1.0f;
+        }
     }
 
     public static boolean isShowCrosshairInThirdPerson() {
@@ -61,13 +81,16 @@ public final class ScaleManager {
     public static synchronized void resetAll() {
         selfScale = 1.0f;
         othersScale = 1.0f;
+        lastSelfScale = 1.0f;
         showCrosshairInThirdPerson = false;
         SCALES.clear();
         ID_TO_UUID.clear();
+        DISPLAY_SCALES.clear();
     }
 
     public static void clearEntityMappings() {
         ID_TO_UUID.clear();
+        DISPLAY_SCALES.clear();
     }
 
     public static void mapEntityId(int entityId, UUID uuid) {
@@ -81,6 +104,18 @@ public final class ScaleManager {
     public static void loadPlayerScales(Map<UUID, Float> scales) {
         SCALES.clear();
         SCALES.putAll(scales);
+    }
+
+    public static float getDisplayScale(int entityId) {
+        float target = getScaleByEntityId(entityId);
+        Float current = DISPLAY_SCALES.get(entityId);
+        if (current == null || Math.abs(current - target) < 0.001f) {
+            DISPLAY_SCALES.put(entityId, target);
+            return target;
+        }
+        float lerped = current + (target - current) * 0.25f;
+        DISPLAY_SCALES.put(entityId, lerped);
+        return lerped;
     }
 
     public static float getScaleByEntityId(int entityId) {
