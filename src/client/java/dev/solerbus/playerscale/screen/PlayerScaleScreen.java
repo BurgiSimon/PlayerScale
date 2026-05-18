@@ -165,11 +165,15 @@ public class PlayerScaleScreen extends Screen {
         }
 
         static double scaleToSlider(float scale) {
-            return (scale - MIN_SCALE) / (MAX_SCALE - MIN_SCALE);
+            return Math.log(scale / MIN_SCALE) / Math.log(MAX_SCALE / MIN_SCALE);
         }
 
         static float sliderToScale(double slider) {
-            return (float) (MIN_SCALE + slider * (MAX_SCALE - MIN_SCALE));
+            float raw = (float) (MIN_SCALE * Math.pow(MAX_SCALE / MIN_SCALE, slider));
+            for (float preset : PRESETS) {
+                if (Math.abs(raw - preset) < 0.05f) return preset;
+            }
+            return raw;
         }
     }
 }
