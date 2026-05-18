@@ -1,6 +1,6 @@
 {
     "required": true,
-    "package": "com.example.playerscale.mixin",
+    "package": "dev.solerbus.playerscale.mixin",
     "compatibilityLevel": "JAVA_21",
     "client": [
         "InGameHudMixin",

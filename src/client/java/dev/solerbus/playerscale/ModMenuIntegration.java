@@ -1,6 +1,6 @@
-package com.example.playerscale;
+package dev.solerbus.playerscale;
 
-import com.example.playerscale.screen.PlayerScaleScreen;
+import dev.solerbus.playerscale.screen.PlayerScaleScreen;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 

@@ -1,8 +1,8 @@
-package com.example.playerscale.screen;
+package dev.solerbus.playerscale.screen;
 
-import com.example.playerscale.PlayerScaleMod;
-import com.example.playerscale.ScaleConfig;
-import com.example.playerscale.ScaleManager;
+import dev.solerbus.playerscale.PlayerScaleMod;
+import dev.solerbus.playerscale.ScaleConfig;
+import dev.solerbus.playerscale.ScaleManager;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -23,8 +23,9 @@ public class PlayerScaleScreen extends Screen {
     private final Screen parent;
     private ScaleSlider selfSlider;
     private ScaleSlider othersSlider;
-    private ButtonWidget keybindButton;
-    private boolean listeningForKey;
+    private ButtonWidget openKeybindButton;
+    private ButtonWidget toggleKeybindButton;
+    private KeyBinding listeningTarget;
 
     public PlayerScaleScreen(Screen parent) {
         super(Text.literal("PlayerScale Settings"));
@@ -48,16 +49,22 @@ public class PlayerScaleScreen extends Screen {
 
         addPresetButtons(centerX - 100, y + 74, othersSlider);
 
-        keybindButton = ButtonWidget.builder(getKeybindText(), button -> {
-            listeningForKey = true;
+        openKeybindButton = ButtonWidget.builder(getKeybindText("Open Key", PlayerScaleMod.openConfigKey), button -> {
+            listeningTarget = PlayerScaleMod.openConfigKey;
             button.setMessage(Text.literal("Open Key: ").append(Text.literal("> ... <").formatted(Formatting.YELLOW)));
         }).dimensions(centerX - 100, y + 104, 200, 20).build();
-        addDrawableChild(keybindButton);
+        addDrawableChild(openKeybindButton);
+
+        toggleKeybindButton = ButtonWidget.builder(getKeybindText("Toggle Key", PlayerScaleMod.toggleScaleKey), button -> {
+            listeningTarget = PlayerScaleMod.toggleScaleKey;
+            button.setMessage(Text.literal("Toggle Key: ").append(Text.literal("> ... <").formatted(Formatting.YELLOW)));
+        }).dimensions(centerX - 100, y + 126, 200, 20).build();
+        addDrawableChild(toggleKeybindButton);
 
         addDrawableChild(ButtonWidget.builder(getCrosshairToggleText(), button -> {
             ScaleManager.setShowCrosshairInThirdPerson(!ScaleManager.isShowCrosshairInThirdPerson());
             button.setMessage(getCrosshairToggleText());
-        }).dimensions(centerX - 100, y + 134, 200, 20).build());
+        }).dimensions(centerX - 100, y + 156, 200, 20).build());
 
         addDrawableChild(ButtonWidget.builder(Text.literal("Reset All"), button -> {
             ScaleManager.resetAll();
@@ -65,11 +72,11 @@ public class PlayerScaleScreen extends Screen {
             othersSlider.setScaleValue(1.0f);
             ScaleConfig.save();
             clearAndInit();
-        }).dimensions(centerX - 100, y + 169, 95, 20).build());
+        }).dimensions(centerX - 100, y + 191, 95, 20).build());
 
         addDrawableChild(ButtonWidget.builder(Text.literal("Done"), button -> {
             close();
-        }).dimensions(centerX + 5, y + 169, 95, 20).build());
+        }).dimensions(centerX + 5, y + 191, 95, 20).build());
     }
 
     private void addPresetButtons(int x, int y, ScaleSlider targetSlider) {
@@ -90,12 +97,11 @@ public class PlayerScaleScreen extends Screen {
                    : Text.literal("OFF").formatted(Formatting.GRAY));
     }
 
-    private Text getKeybindText() {
-        KeyBinding key = PlayerScaleMod.openConfigKey;
+    private Text getKeybindText(String label, KeyBinding key) {
         if (key.isUnbound()) {
-            return Text.literal("Open Key: ").append(Text.literal("[NOT SET]").formatted(Formatting.GRAY));
+            return Text.literal(label + ": ").append(Text.literal("[NOT SET]").formatted(Formatting.GRAY));
         }
-        return Text.literal("Open Key: ").append(key.getBoundKeyLocalizedText().copy().formatted(Formatting.AQUA));
+        return Text.literal(label + ": ").append(key.getBoundKeyLocalizedText().copy().formatted(Formatting.AQUA));
     }
 
     @Override
@@ -106,15 +112,14 @@ public class PlayerScaleScreen extends Screen {
 
     @Override
     public boolean keyPressed(KeyInput keyInput) {
-        if (listeningForKey) {
-            listeningForKey = false;
+        if (listeningTarget != null) {
             if (keyInput.key() == InputUtil.GLFW_KEY_ESCAPE) {
-                keybindButton.setMessage(getKeybindText());
+                refreshKeybindButtons();
                 return true;
             }
-            PlayerScaleMod.openConfigKey.setBoundKey(InputUtil.Type.KEYSYM.createFromCode(keyInput.key()));
+            listeningTarget.setBoundKey(InputUtil.Type.KEYSYM.createFromCode(keyInput.key()));
             KeyBinding.updateKeysByCode();
-            keybindButton.setMessage(getKeybindText());
+            refreshKeybindButtons();
             return true;
         }
         return super.keyPressed(keyInput);
@@ -122,14 +127,19 @@ public class PlayerScaleScreen extends Screen {
 
     @Override
     public boolean mouseClicked(Click click, boolean occupied) {
-        if (listeningForKey) {
-            listeningForKey = false;
-            PlayerScaleMod.openConfigKey.setBoundKey(InputUtil.Type.MOUSE.createFromCode(click.button()));
+        if (listeningTarget != null) {
+            listeningTarget.setBoundKey(InputUtil.Type.MOUSE.createFromCode(click.button()));
             KeyBinding.updateKeysByCode();
-            keybindButton.setMessage(getKeybindText());
+            refreshKeybindButtons();
             return true;
         }
         return super.mouseClicked(click, occupied);
+    }
+
+    private void refreshKeybindButtons() {
+        listeningTarget = null;
+        openKeybindButton.setMessage(getKeybindText("Open Key", PlayerScaleMod.openConfigKey));
+        toggleKeybindButton.setMessage(getKeybindText("Toggle Key", PlayerScaleMod.toggleScaleKey));
     }
 
     static class ScaleSlider extends SliderWidget {
@@ -165,11 +175,15 @@ public class PlayerScaleScreen extends Screen {
         }
 
         static double scaleToSlider(float scale) {
-            return (scale - MIN_SCALE) / (MAX_SCALE - MIN_SCALE);
+            return Math.log(scale / MIN_SCALE) / Math.log(MAX_SCALE / MIN_SCALE);
         }
 
         static float sliderToScale(double slider) {
-            return (float) (MIN_SCALE + slider * (MAX_SCALE - MIN_SCALE));
+            float raw = (float) (MIN_SCALE * Math.pow(MAX_SCALE / MIN_SCALE, slider));
+            for (float preset : PRESETS) {
+                if (Math.abs(raw - preset) < 0.05f) return preset;
+            }
+            return raw;
         }
     }
 }

@@ -1,6 +1,6 @@
-package com.example.playerscale.mixin;
+package dev.solerbus.playerscale.mixin;
 
-import com.example.playerscale.ScaleManager;
+import dev.solerbus.playerscale.ScaleManager;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
@@ -16,7 +16,7 @@ public abstract class PlayerEntityRendererMixin {
     private void applyCustomScale(PlayerEntityRenderState state,
                                   MatrixStack matrices,
                                   CallbackInfo ci) {
-        float scale = ScaleManager.getScaleByEntityId(state.id);
+        float scale = ScaleManager.getDisplayScale(state.id);
         if (scale != 1.0f) {
             matrices.scale(scale, scale, scale);
         }
