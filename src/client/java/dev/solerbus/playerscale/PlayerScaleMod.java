@@ -1,7 +1,7 @@
-package com.example.playerscale;
+package dev.solerbus.playerscale;
 
-import com.example.playerscale.command.PlayerScaleCommand;
-import com.example.playerscale.screen.PlayerScaleScreen;
+import dev.solerbus.playerscale.command.PlayerScaleCommand;
+import dev.solerbus.playerscale.screen.PlayerScaleScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;

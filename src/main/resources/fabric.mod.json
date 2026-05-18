@@ -16,10 +16,10 @@
     "environment": "client",
     "entrypoints": {
         "client": [
-            "com.example.playerscale.PlayerScaleMod"
+            "dev.solerbus.playerscale.PlayerScaleMod"
         ],
         "modmenu": [
-            "com.example.playerscale.ModMenuIntegration"
+            "dev.solerbus.playerscale.ModMenuIntegration"
         ]
     },
     "mixins": [

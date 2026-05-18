@@ -1,8 +1,8 @@
-package com.example.playerscale.command;
+package dev.solerbus.playerscale.command;
 
-import com.example.playerscale.ScaleConfig;
-import com.example.playerscale.ScaleManager;
-import com.example.playerscale.screen.PlayerScaleScreen;
+import dev.solerbus.playerscale.ScaleConfig;
+import dev.solerbus.playerscale.ScaleManager;
+import dev.solerbus.playerscale.screen.PlayerScaleScreen;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;

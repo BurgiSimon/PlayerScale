@@ -1,4 +1,4 @@
-package com.example.playerscale;
+package dev.solerbus.playerscale;
 
 import java.util.Collections;
 import java.util.Map;

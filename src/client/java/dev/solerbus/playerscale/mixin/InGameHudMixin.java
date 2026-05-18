@@ -1,6 +1,6 @@
-package com.example.playerscale.mixin;
+package dev.solerbus.playerscale.mixin;
 
-import com.example.playerscale.ScaleManager;
+import dev.solerbus.playerscale.ScaleManager;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.option.Perspective;
 import org.spongepowered.asm.mixin.Mixin;

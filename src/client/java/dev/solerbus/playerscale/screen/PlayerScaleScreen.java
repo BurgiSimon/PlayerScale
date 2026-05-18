@@ -1,8 +1,8 @@
-package com.example.playerscale.screen;
+package dev.solerbus.playerscale.screen;
 
-import com.example.playerscale.PlayerScaleMod;
-import com.example.playerscale.ScaleConfig;
-import com.example.playerscale.ScaleManager;
+import dev.solerbus.playerscale.PlayerScaleMod;
+import dev.solerbus.playerscale.ScaleConfig;
+import dev.solerbus.playerscale.ScaleManager;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;

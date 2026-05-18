@@ -17,7 +17,7 @@ PlayerScale is a client-side Fabric mod for Minecraft 1.21.11 that visually scal
 
 ## Architecture
 
-All mod code lives under `src/client/java/com/example/playerscale/` (Loom split source sets - client only).
+All mod code lives under `src/client/java/dev/solerbus/playerscale/` (Loom split source sets - client only).
 
 **Data flow for scaling:**
 1. `PlayerEntityRendererUpdateMixin` injects at TAIL of `updateRenderState` to map each player's entity ID to their UUID, and identifies the local player
