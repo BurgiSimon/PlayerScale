@@ -16,7 +16,7 @@ public abstract class PlayerEntityRendererMixin {
     private void applyCustomScale(PlayerEntityRenderState state,
                                   MatrixStack matrices,
                                   CallbackInfo ci) {
-        float scale = ScaleManager.getScaleByEntityId(state.id);
+        float scale = ScaleManager.getDisplayScale(state.id);
         if (scale != 1.0f) {
             matrices.scale(scale, scale, scale);
         }
