@@ -13,6 +13,7 @@ import net.minecraft.client.util.InputUtil;
 public class PlayerScaleMod implements ClientModInitializer {
 
     public static KeyBinding openConfigKey;
+    public static KeyBinding toggleScaleKey;
 
     @Override
     public void onInitializeClient() {
@@ -23,9 +24,20 @@ public class PlayerScaleMod implements ClientModInitializer {
                 KeyBinding.Category.create(net.minecraft.util.Identifier.of("playerscale", "keybinds"))
         ));
 
+        toggleScaleKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+                "key.playerscale.toggle_scale",
+                InputUtil.Type.KEYSYM,
+                InputUtil.UNKNOWN_KEY.getCode(),
+                KeyBinding.Category.create(net.minecraft.util.Identifier.of("playerscale", "keybinds"))
+        ));
+
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (openConfigKey.wasPressed()) {
                 client.setScreen(new PlayerScaleScreen(null));
+            }
+            while (toggleScaleKey.wasPressed()) {
+                ScaleManager.toggleSelfScale();
+                ScaleConfig.save();
             }
         });
 

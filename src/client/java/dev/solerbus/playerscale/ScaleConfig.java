@@ -27,6 +27,7 @@ public final class ScaleConfig {
             if (data == null) return;
             ScaleManager.setSelfScale(clampScale(data.selfScale));
             ScaleManager.setOthersScale(clampScale(data.othersScale));
+            ScaleManager.setLastSelfScale(clampScale(data.lastSelfScale));
             ScaleManager.setShowCrosshairInThirdPerson(data.showCrosshairInThirdPerson);
             if (data.playerScales != null) {
                 Map<UUID, Float> scales = new HashMap<>();
@@ -48,6 +49,7 @@ public final class ScaleConfig {
         ConfigData data = new ConfigData();
         data.selfScale = ScaleManager.getSelfScale();
         data.othersScale = ScaleManager.getOthersScale();
+        data.lastSelfScale = ScaleManager.getLastSelfScale();
         data.showCrosshairInThirdPerson = ScaleManager.isShowCrosshairInThirdPerson();
         data.playerScales = new HashMap<>();
         ScaleManager.getPlayerScales().forEach((uuid, scale) ->
@@ -69,6 +71,7 @@ public final class ScaleConfig {
     private static class ConfigData {
         float selfScale = 1.0f;
         float othersScale = 1.0f;
+        float lastSelfScale = 1.0f;
         boolean showCrosshairInThirdPerson = false;
         Map<String, Float> playerScales = new HashMap<>();
     }
