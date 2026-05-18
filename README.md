@@ -6,9 +6,12 @@ This was created since i used a similar feature when playing Hypixel Skyblock wi
 ## Features
 
 - Scale your own player model and other players' models (0.1x - 10x)
-- Config GUI with sliders and quick presets (Tiny, Normal, Large, Giant)
+- Smooth scale transitions with linear interpolation
+- Toggle keybind to quickly switch your scale on/off (unbound by default)
+- Config GUI with logarithmic sliders and quick presets (Tiny, Normal, Large, Giant)
 - Toggle crosshair visibility in 3rd person view
 - Configurable keybind to open the config screen (unbound by default)
+- Player name tab-completion in commands
 - Settings persist across restarts (saved to config file)
 - [Mod Menu](https://modrinth.com/mod/modmenu) integration - access settings from the mod list
 - Client-side only - no server installation needed
