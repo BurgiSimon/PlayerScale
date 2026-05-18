@@ -2,6 +2,7 @@
 
 A client-side Fabric mod for Minecraft 1.21.11 that lets you visually resize player models. The scaling is purely cosmetic and only visible to you - other players are not affected.
 This was created since i used a similar feature when playing Hypixel Skyblock with the Skytils mod.
+https://modrinth.com/mod/playerscale
 
 ## Features
 
